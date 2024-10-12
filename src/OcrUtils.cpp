@@ -1,6 +1,9 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <numeric>
+#include <string>
+#include <locale>
+#include <codecvt>
 #include "OcrUtils.h"
 #include "clipper.hpp"
 
@@ -9,12 +12,10 @@ double getCurrentTime() {
 }
 
 //onnxruntime init windows
+// 使用 std::wstring_convert 进行 UTF-8 到 UTF-16 的转换
 std::wstring strToWstr(std::string str) {
-    if (str.length() == 0)
-        return L"";
-    std::wstring wstr;
-    wstr.assign(str.begin(), str.end());
-    return wstr;
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    return converter.from_bytes(str);
 }
 
 ScaleParam getScaleParam(cv::Mat &src, const float scale) {
